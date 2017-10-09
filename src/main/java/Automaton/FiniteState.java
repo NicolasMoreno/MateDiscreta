@@ -5,7 +5,7 @@ import java.util.List;
 
 public class FiniteState {
 
-    private final FiniteState STATE_NULL = new FiniteState("null");
+//    private final FiniteState STATE_NULL = new FiniteState("null");
 
     private boolean isFinal = false;
     private String name;
@@ -33,7 +33,7 @@ public class FiniteState {
                 states.add(finiteTransition.getState());
             }
         }
-        if(states.isEmpty()) states.add(this.STATE_NULL);
+        if(states.isEmpty()) states.add(new FiniteState("null"));
         return states;
     }
 
