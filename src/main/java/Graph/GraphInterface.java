@@ -5,7 +5,8 @@ import java.util.List;
 public interface GraphInterface<T> {
 
     void addVertex(T vertex);
-    void addEdge(int from, int to);
+    void addBidirectionalEdge(int from, int to);
+    void addUnidirectionalEdge(int from, int to);
     void deleteEdge(int from, int to);
     void deleteVertex(int vertexPosition);
     boolean hasEdge(int from, int to);

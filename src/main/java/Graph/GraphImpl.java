@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GraphImpl<T> implements GraphInterface<T>  {
-//TODO MAL MAL MAL.!!
+//TODO MAL MAL MAL.!! Creo que hay que hacer un Rway trie
     private ArrayList<T> vertexArray;
     private boolean[][] edges;
     private int index;
@@ -32,8 +32,14 @@ public class GraphImpl<T> implements GraphInterface<T>  {
     }
 
     @Override
-    public void addEdge(int from, int to) {
+    public void addBidirectionalEdge(int from, int to) {
         this.edges[from][to] = this.edges[to][from] = true;
+        this.edgesindex++;
+    }
+
+    @Override
+    public void addUnidirectionalEdge(int from, int to) {
+        this.edges[from][to] = true;
         this.edgesindex++;
     }
 
