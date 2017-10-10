@@ -22,6 +22,10 @@ public class FiniteAutomaton {
         result.addState(initialState);
         if(index >= word.length()) return result;
         final List<FiniteState> states = initialState.getStates(word.charAt(index));
+        if(states.get(0).getName().equals("null")) {
+            result.addState(states.get(0));
+            return result;
+        }
         Result auxResult = null;
         for (FiniteState state : states){
             auxResult = evaluate(state,word,index+1, result);

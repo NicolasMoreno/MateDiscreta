@@ -5,14 +5,14 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        HtmlReader htmlReader;
+        /*HtmlReader htmlReader;
         try {
             htmlReader = new HtmlReader("/Users/nicolasmoreno/Nico/Facultad/Mate Dis/TpMateDiscreta/src/resources/files/htmlFile.html");
             System.out.println(htmlReader.readLine());
             System.out.println(htmlReader.readLine());
         } catch (IOException e2){
             e2.printStackTrace();
-        }
+        }*/
 
 
         FiniteState q0 = new FiniteState("q0");
@@ -21,9 +21,8 @@ public class Main {
         q1.setFinal();
 
         q0.addTransition(q0, '0');
-        q0.addTransition(q1, '0', '1');
+        q0.addTransition(q1,  '1');
         q1.addTransition(q1, '1');
-        q1.addTransition(q0, '1');
 
         FiniteAutomaton automat = new FiniteAutomaton(q0);
 

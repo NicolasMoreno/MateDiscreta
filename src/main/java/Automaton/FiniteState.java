@@ -5,8 +5,6 @@ import java.util.List;
 
 public class FiniteState {
 
-//    private final FiniteState STATE_NULL = new FiniteState("null");
-
     private boolean isFinal = false;
     private String name;
     private List<FiniteTransition> transitions;
@@ -33,7 +31,7 @@ public class FiniteState {
                 states.add(finiteTransition.getState());
             }
         }
-        if(states.isEmpty()) states.add(new FiniteState("null"));
+        if(states.isEmpty()) states.add(new FiniteState("null")); //Here goes the error, where no state to the transition is found
         return states;
     }
 
