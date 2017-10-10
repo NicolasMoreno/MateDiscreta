@@ -26,20 +26,8 @@ public class Main {
 
         FiniteAutomaton automat = new FiniteAutomaton(q0);
 
-        FiniteAutomaton.Result result = automat.evaluate("011000");
         FiniteAutomaton.Result result2 = automat.evaluate("0110010");
+        System.out.println("Result2 isValid " + result2.isValid());
 
-
-        /*FiniteState q0 = new FiniteState("q0");
-        FiniteState q1 = new FiniteState("q1");
-        FiniteState q2 = new FiniteState("q2");
-        FiniteState q3 = new FiniteState("q3");
-        FiniteState q4 = new FiniteState("q4");
-        q4.setFinal();
-
-        q0.addTransition(q1,'a');
-        q0.addTransition(q2,'b');
-
-        FiniteAutomaton fa = new FiniteAutomaton(q0);*/
     }
 }
