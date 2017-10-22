@@ -6,11 +6,13 @@ import java.util.List;
 public class FiniteState {
 
     private boolean isFinal = false;
+    private Integer value;
     private String name;
     private List<FiniteTransition> transitions;
 
     public FiniteState(String name){
         this.name = name;
+        this.value = null;
         this.transitions = new LinkedList<>();
     }
 
@@ -23,6 +25,8 @@ public class FiniteState {
             this.transitions.add(finiteTransition);
         }
     }
+
+
 
     public List<FiniteState> getStates(char c){
         List<FiniteState> states = new LinkedList<>();
@@ -49,5 +53,13 @@ public class FiniteState {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getValue() {
+        return value;
+    }
+
+    public void setValue(Integer value) {
+        this.value = value;
     }
 }

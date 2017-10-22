@@ -1,4 +1,5 @@
 import Automaton.FiniteAutomaton;
+import Automaton.FiniteAutomatonBuilder;
 import Automaton.FiniteState;
 import HtmlReader.HtmlReader;
 import java.io.IOException;
@@ -15,19 +16,13 @@ public class Main {
         }*/
 
 
-        FiniteState q0 = new FiniteState("q0");
-        FiniteState q1 = new FiniteState("q1");
-
-        q1.setFinal();
-
-        q0.addTransition(q0, '0');
-        q0.addTransition(q1,  '1');
-        q1.addTransition(q1, '1');
+        FiniteState q0 = new FiniteState("InitialState");
 
         FiniteAutomaton automat = new FiniteAutomaton(q0);
 
-        FiniteAutomaton.Result result2 = automat.evaluate("0110010");
-        System.out.println("Result2 isValid " + result2.isValid());
+        FiniteAutomatonBuilder.buildAutomaton(automat, "Hello","World", "Hello world"); //We should receive words from the .txt file
+        FiniteAutomaton.Result result3 = automat.evaluate("Hello world");
+        System.out.println("Result3 valid " + result3.isValid());
 
     }
 }

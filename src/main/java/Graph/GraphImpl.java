@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GraphImpl<T> implements GraphInterface<T>  {
-//TODO MAL MAL MAL.!! Creo que hay que hacer un Rway trie
     private ArrayList<T> vertexArray;
     private boolean[][] edges;
     private int index;

@@ -34,8 +34,7 @@ public class FiniteAutomaton {
         return auxResult;
 
     }
-
-
+    //TODO Hacer un metodo para checkear si un automata es NFA.
     public class Result{
         private String word;
         private List<FiniteState> states;
