@@ -14,6 +14,10 @@ public class FiniteAutomaton {
         this.initialState = initialState;
     }
 
+    /**
+     * Method that adds deterministically values to the automaton.
+     * @param words
+     */
     public void add(final String... words){
         for(String word: words){
             this.add(this.initialState,word,0);
