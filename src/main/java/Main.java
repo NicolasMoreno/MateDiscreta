@@ -20,8 +20,10 @@ public class Main {
 
         FiniteAutomaton automat = new FiniteAutomaton(q0);
 
-        FiniteAutomatonBuilder.buildAutomaton(automat, "Hello","World", "Hello world"); //We should receive words from the .txt file
-        FiniteAutomaton.Result result3 = automat.evaluate("Hello");
+        //We should receive words from the .txt file
+        automat.add("hello", "hello world", "world");
+        automat.add("hellu");
+        FiniteAutomaton.Result result3 = automat.evaluate("hello");
         System.out.println("Result3 valid " + result3.isValid());
 
     }

@@ -14,6 +14,31 @@ public class FiniteAutomaton {
         this.initialState = initialState;
     }
 
+    public void add(final String... words){
+        for(String word: words){
+            this.add(this.initialState,word,0);
+        }
+    }
+
+    private void add(FiniteState actualState, String word, int index){
+        if(index>= word.length()) return;
+        final char actualChar = word.charAt(index);
+        final List<FiniteState> states = actualState.getStates(actualChar);
+        if(states.get(0).getName().equals("null")){
+            FiniteState finiteState = new FiniteState(""+actualChar);
+            if(index == word.length()-1) finiteState.setFinal();
+            actualState.addTransition(finiteState, actualChar);
+            this.add(finiteState, word, index+1);
+        }
+        else{
+            for (FiniteState state : states){
+                if(state.getName().equals(""+actualChar)){
+                    this.add(state, word, index+1);
+                }
+            }
+        }
+    }
+
     public FiniteState getInitialState() {
         return this.initialState;
     }
@@ -53,7 +78,7 @@ public class FiniteAutomaton {
             FiniteAutomaton deterministicAutomaton = new FiniteAutomaton();
 
         }
-        return null;
+        return this;
     }
 
     public class Result{

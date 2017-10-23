@@ -23,7 +23,7 @@ public class FiniteState {
             if(this.transitions.contains(finiteTransition)){
                 continue;
             }
-            this.transitions.add(finiteTransition);
+            this.transitions.add(finiteTransition); //TODO hacerlo en automaton. No es una responsabilidad del estado agregarse transiciones
         }
     }
 
@@ -52,6 +52,7 @@ public class FiniteState {
 
     public void setFinal() {
         isFinal = true;
+        this.setValue(0);
     }
 
     public String getName() {
