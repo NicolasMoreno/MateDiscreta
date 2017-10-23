@@ -23,7 +23,7 @@ public class FiniteAutomatonBuilder {
                     otherChar.setFinal();
                     otherChar.setValue(0);
                 }
-                otherChar.addTransition(firstChar,firstChar.getName().charAt(0));
+                otherChar.addTransition(firstChar,firstChar.getName().charAt(0)); //TODO preguntar si hace falta esto.
                 lastState.addTransition(otherChar, otherChar.getName().charAt(0));
                 lastState = otherChar;
             }

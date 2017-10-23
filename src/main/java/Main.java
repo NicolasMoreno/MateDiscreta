@@ -21,7 +21,7 @@ public class Main {
         FiniteAutomaton automat = new FiniteAutomaton(q0);
 
         FiniteAutomatonBuilder.buildAutomaton(automat, "Hello","World", "Hello world"); //We should receive words from the .txt file
-        FiniteAutomaton.Result result3 = automat.evaluate("Hello world");
+        FiniteAutomaton.Result result3 = automat.evaluate("Hello");
         System.out.println("Result3 valid " + result3.isValid());
 
     }

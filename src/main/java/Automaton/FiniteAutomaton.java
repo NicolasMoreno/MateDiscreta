@@ -6,6 +6,10 @@ import java.util.List;
 public class FiniteAutomaton {
     private final FiniteState initialState;
 
+    public FiniteAutomaton(){
+        this.initialState = new FiniteState("InitialState");
+    }
+
     public FiniteAutomaton(final FiniteState initialState) {
         this.initialState = initialState;
     }
@@ -34,7 +38,24 @@ public class FiniteAutomaton {
         return auxResult;
 
     }
-    //TODO Hacer un metodo para checkear si un automata es NFA.
+
+    /**
+     * Method that checks if the automaton is nonDeterministic
+     * @return boolean representing if is non-deterministic-automaton
+     * TODO
+     */
+    private boolean isNonDeterministic(){
+        return true;
+    }
+
+    public FiniteAutomaton transformToDeterministic(){
+        if(this.isNonDeterministic()){
+            FiniteAutomaton deterministicAutomaton = new FiniteAutomaton();
+
+        }
+        return null;
+    }
+
     public class Result{
         private String word;
         private List<FiniteState> states;

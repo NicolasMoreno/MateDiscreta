@@ -1,5 +1,6 @@
 package Automaton;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,7 +27,13 @@ public class FiniteState {
         }
     }
 
-
+    public List<FiniteState> getAllStates(){
+        ArrayList<FiniteState> states = new ArrayList<>();
+        for (FiniteTransition transition: this.transitions){
+            states.add(transition.getState());
+        }
+        return states;
+    }
 
     public List<FiniteState> getStates(char c){
         List<FiniteState> states = new LinkedList<>();
