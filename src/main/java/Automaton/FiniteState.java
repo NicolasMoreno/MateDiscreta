@@ -70,4 +70,8 @@ public class FiniteState {
     public void setValue(Integer value) {
         this.value = value;
     }
+
+    public List<FiniteTransition> getTransitions() {
+        return transitions;
+    }
 }
