@@ -7,9 +7,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Ingrese la ruta o el nombre del archivo que desea levantar: ");
+        String path = scanner.nextLine();
 
         FiniteState q0 = new FiniteState("InitialState");
 
