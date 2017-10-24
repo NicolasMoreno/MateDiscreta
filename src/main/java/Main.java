@@ -10,6 +10,7 @@ import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import static guru.nidi.graphviz.model.Factory.*;
@@ -58,9 +59,6 @@ public class Main {
                             )
                     )
             );
-
-
-
             Graphviz.fromGraph(g).width(200).render(Format.PNG).toFile(new File("example/ex1.png"));
         } catch (IOException e) {
             System.out.println(e);
@@ -85,37 +83,24 @@ public class Main {
     }
 
     //TODO
-    private static void graphicInitialState(String filesName, FiniteState state) {
-        Graph graph = graph(filesName).directed().with(
-                graphic(node(state.getName()), state)
-        );
-
-        try {
-            Graphviz.fromGraph(graph).width(200).render(Format.PNG).toFile(new File("example/" + filesName + ".png"));
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    //TODO
     private static Node graphic(Node node, FiniteState state) {
-
-        if (!state.isFinal()) {
-
-            for (FiniteTransition transition : state.getTransitions()) {
-                FiniteState transState = transition.getState();
-
-//                Node nodeAux = node(transState.getName()).with(
-//                        Label.of(String.valueOf(transition.getChar()))
-//                );
-//
-//                node.link(nodeAux).link(graphic(nodeAux, transState));
-
+        File file = new File("example/example.dot");
+        try {
+            FileWriter writer = new FileWriter(file);
+            writer.append("digraph { \n rankdir = \"LR\"; \n");
+            for (FiniteState finiteState: state.getAllStates()) {
+                if(finiteState.isFinal()){
+                    writer.append("node [shape=doublecircle] Node" + finiteState.getName() + " [label =" + finiteState.getName() + "];");
+                }else{
+                    writer.append("node [shape=circle] Node").append(finiteState.getName()).append(" [label =").append(finiteState.getName()).append("];");
+                }
+                for (FiniteTransition finiteTransition: finiteState.getTransitions()) {
+//                    writer.append(finiteTransition.getChar() + "->" + finiteTransition.)
+                }
             }
-
-        } else {
-            node.link(node(state.getName()));
+            writer.append("\n}");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return node;
     }
 }
