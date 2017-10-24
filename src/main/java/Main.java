@@ -5,7 +5,9 @@ import HtmlReader.HtmlReader;
 import extras.GraphViz;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
@@ -28,21 +30,58 @@ public class Main {
                 automat.addNonDeterministically(line);
             }
             automat.transformToDeterministic();
+            int indexFile = 0;
             for(File auxFile: files){
                 HtmlReader htmlReader = new HtmlReader(auxFile.getPath());
                 String line2;
                 while ((line2 = htmlReader.readLine()) != null) {
-                    System.out.println(line2);
+                    automat.evaluate(line2,indexFile);
                 }
+                indexFile++;
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        generateIndexTxt(automat,files);
+
 //        automat.evaluate("muhila mundo hila mundo mundo mundo",0);
 
         /*generateDOT(automat);
         dotToPNG();*/
+    }
+
+    private static void generateIndexTxt(FiniteAutomaton automat, File[] files) {
+        final Map<String, ArrayList<Integer>> concurrencyMap = automat.getConcurrencyMap();
+        try{
+            FileWriter writer = new FileWriter(new File("example/index.txt"));
+            concurrencyMap.forEach((s, integers) -> {
+                System.out.println(s+'\n');
+                try {
+                    writer.append(s+'\n');
+                    int index = 0;
+                    for( Integer integer: integers){
+                        if(index == 0 && !(integer.equals(0))){
+                            writer.append(files[index].getName()+'\n');
+                            writer.append(integer.toString()+'\n');
+                        }
+                        else if(!(integer - integers.get(index-1) == 0)){
+                            writer.append(files[index].getName()+'\n');
+                            Integer result = integer - integers.get(index-1);
+                            writer.append(result.toString()+'\n');
+                        }
+                        index++;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            writer.flush();
+            writer.close();
+
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
 

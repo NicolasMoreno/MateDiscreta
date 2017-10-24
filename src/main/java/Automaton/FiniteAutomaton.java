@@ -75,7 +75,8 @@ public class FiniteAutomaton {
     }
 
     public void evaluate(final String word, final int directoryIndex){
-        evaluate(getInitialState(), word, 0, new StringBuilder(), directoryIndex);
+        String loweredWord = word.toLowerCase();
+        evaluate(getInitialState(), loweredWord, 0, new StringBuilder(), directoryIndex);
     }
 
     private void evaluate(FiniteState initialState, String word, int index, StringBuilder sb, int directoryIndex) {
@@ -86,7 +87,7 @@ public class FiniteAutomaton {
         }
         final List<FiniteState> states = initialState.getStates(word.charAt(index));
         if(states.get(0).getName().equals("null")) {
-            this.evaluate(getInitialState(),word,index, sb.delete(0,sb.length()),directoryIndex);
+            this.evaluate(getInitialState(),word,index+1, sb.delete(0,sb.length()),directoryIndex);
         }else{
             for (FiniteState state : states){
                 if(state.getName().equals(""+word.charAt(index))){
@@ -94,7 +95,8 @@ public class FiniteAutomaton {
                         sb.append(state.getName());
                         state.addValue();
                         final ArrayList<Integer> integers = this.concurrencyMap.get(sb.toString());
-                        integers.add(directoryIndex,state.getValue());
+                        if(directoryIndex >= integers.size()) integers.add(directoryIndex,state.getValue());
+                        else integers.set(directoryIndex,state.getValue());
                         this.concurrencyMap.put(sb.toString(), integers);
                         this.evaluate(state,word,index+1, sb,directoryIndex);
                     }else {
@@ -149,6 +151,9 @@ public class FiniteAutomaton {
         finiteState.getAllStates().forEach(finiteState1 -> this.fillDictionary(dictionary,finiteState1)); //May be this could be filled while adding in the automaton
     }
 
+    public Map<String, ArrayList<Integer>> getConcurrencyMap() {
+        return concurrencyMap;
+    }
 
     public List<FiniteState> getAllStates() {
         List<FiniteState> result = new ArrayList<>();
