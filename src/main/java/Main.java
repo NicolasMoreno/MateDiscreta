@@ -25,15 +25,14 @@ public class Main {
         FiniteAutomaton automat = new FiniteAutomaton(q0);
 
         //We should receive words from the .txt file or from the console input by the user
-        automat.addDeterministically("hello", "hello world", "world");
+   /*     automat.addDeterministically("hello", "hello world", "world");
         automat.addDeterministically("hellu");
         final FiniteAutomaton.Result world = automat.evaluate("world");
-        System.out.println("world result valid" + world.isValid());
-        automat.emptyAutomaton();
-        automat.addNonDeterministically("hello","hola", "hola mundo");
+        System.out.println("world result valid" + world.isValid());*/
+//        automat.emptyAutomaton();
+        automat.addNonDeterministically("hola","mundo", "hola mundo");
         automat.transformToDeterministic();
-        FiniteAutomaton.Result result3 = automat.evaluate("hola");
-        System.out.println("Result3 valid " + result3.isValid());
+        automat.evaluate("hola mundo hola mundo hola hola mundo hola hola mundo hola hola mundo mundo");
 
     }
 }

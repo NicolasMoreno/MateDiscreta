@@ -71,24 +71,31 @@ public class FiniteAutomaton {
         return this.initialState;
     }
 
-    public Result evaluate(final String word){
-        return evaluate(getInitialState(), word, 0, new Result(word));
+    public void evaluate(final String word){
+        evaluate(getInitialState(), word, 0);
     }
 
-    private Result evaluate(FiniteState initialState, String word, int index, Result result) {
-        result.addState(initialState);
-        if(index >= word.length()) return result;
+    private void evaluate(FiniteState initialState, String word, int index) {
+        if(index >= word.length()) return;
+        if(initialState.getAllStates().isEmpty()) {
+            this.evaluate(getInitialState(),word,index+1);
+            return;
+        }
         final List<FiniteState> states = initialState.getStates(word.charAt(index));
         if(states.get(0).getName().equals("null")) {
-            result.addState(states.get(0));
-            return result;
+            this.evaluate(getInitialState(),word,index);
+        }else{
+            for (FiniteState state : states){
+                if(state.getName().equals(""+word.charAt(index))){
+                    if(state.isFinal()){
+                        state.addValue();
+                        this.evaluate(state,word,index+1);
+                    }else {
+                        this.evaluate(state,word,index+1);
+                    }
+                }
+            }
         }
-        Result auxResult = null;
-        for (FiniteState state : states){
-            auxResult = evaluate(state,word,index+1, result);
-            if(auxResult.isValid()) return auxResult;
-        }
-        return auxResult;
 
     }
 
@@ -132,7 +139,7 @@ public class FiniteAutomaton {
 
     private void fillDictionary(ArrayList<String> dictionary, FiniteState finiteState) {
         if(!(dictionary.contains(finiteState.getName()))) dictionary.add(finiteState.getName());
-        finiteState.getAllStates().forEach(finiteState1 -> this.fillDictionary(dictionary,finiteState1));
+        finiteState.getAllStates().forEach(finiteState1 -> this.fillDictionary(dictionary,finiteState1)); //May be this could be filled while adding in the automaton
     }
 
     public class Result{

@@ -70,4 +70,6 @@ public class FiniteState {
     public void setValue(Integer value) {
         this.value = value;
     }
+
+    public void addValue() {this.value = value+1; }
 }
