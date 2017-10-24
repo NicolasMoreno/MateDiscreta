@@ -53,7 +53,7 @@ public class Main {
     private static void generateIndexTxt(FiniteAutomaton automat, File[] files) {
         final Map<String, ArrayList<Integer>> concurrencyMap = automat.getConcurrencyMap();
         try{
-            FileWriter writer = new FileWriter(new File("example/index.txt"));
+            FileWriter writer = new FileWriter(new File("index.txt"));
             concurrencyMap.forEach((s, integers) -> {
                 try {
                     writer.append(s+'\n');
@@ -88,7 +88,7 @@ public class Main {
     private static void generateDOT(FiniteAutomaton automaton, String filename) {
         List<FiniteState> states = automaton.getAllStates();
 
-        File file = new File("example/"+filename+".dot");
+        File file = new File(filename+".dot");
         try {
             FileWriter writer = new FileWriter(file);
             writer.append("digraph { \n\t rankdir = \"LR\"; \n");
@@ -120,7 +120,7 @@ public class Main {
      */
     private static void dotToPNG(String filename)
     {
-        String input = "example/"+filename+".dot";
+        String input = filename+".dot";
 
         GraphViz gv = new GraphViz();
         gv.readSource(input);
@@ -129,7 +129,7 @@ public class Main {
         String type = "png";
         String representationType= "dot";
 
-        File out = new File("example/"+filename+"." + type);
+        File out = new File(filename+"." + type);
         gv.writeGraphToFile( gv.getGraph(gv.getDotSource(), type, representationType), out);
     }
 }
