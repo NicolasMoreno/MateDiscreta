@@ -71,5 +71,9 @@ public class FiniteState {
         this.value = value;
     }
 
+    public List<FiniteTransition> getTransitions() {
+        return transitions;
+    }
+
     public void addValue() {this.value = value+1; }
 }

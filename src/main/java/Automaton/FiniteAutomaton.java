@@ -8,7 +8,7 @@ public class FiniteAutomaton {
 
     private FiniteState initialState;
 
-    public FiniteAutomaton(){
+    public FiniteAutomaton() {
         this.initialState = new FiniteState("InitialState");
     }
 
@@ -26,20 +26,19 @@ public class FiniteAutomaton {
         }
     }
 
-    private void add(FiniteState actualState, String word, int index){
-        if(index>= word.length()) return;
+    private void add(FiniteState actualState, String word, int index) {
+        if (index >= word.length()) return;
         final char actualChar = word.charAt(index);
         final List<FiniteState> states = actualState.getStates(actualChar);
-        if(states.get(0).getName().equals("null")){
-            FiniteState finiteState = new FiniteState(""+actualChar);
-            if(index == word.length()-1) finiteState.setFinal();
+        if (states.get(0).getName().equals("null")) {
+            FiniteState finiteState = new FiniteState("" + actualChar);
+            if (index == word.length() - 1) finiteState.setFinal();
             actualState.addTransition(finiteState, actualChar);
-            this.add(finiteState, word, index+1);
-        }
-        else{
-            for (FiniteState state : states){
-                if(state.getName().equals(""+actualChar)){
-                    this.add(state, word, index+1);
+            this.add(finiteState, word, index + 1);
+        } else {
+            for (FiniteState state : states) {
+                if (state.getName().equals("" + actualChar)) {
+                    this.add(state, word, index + 1);
                 }
             }
         }
@@ -142,7 +141,7 @@ public class FiniteAutomaton {
         finiteState.getAllStates().forEach(finiteState1 -> this.fillDictionary(dictionary,finiteState1)); //May be this could be filled while adding in the automaton
     }
 
-    public class Result{
+    public class Result {
         private String word;
         private List<FiniteState> states;
 
@@ -151,11 +150,11 @@ public class FiniteAutomaton {
             this.states = new LinkedList<>();
         }
 
-        public boolean isValid(){
-            return this.states.get(this.states.size()-1).isFinal();
+        public boolean isValid() {
+            return this.states.get(this.states.size() - 1).isFinal();
         }
 
-        public void addState(FiniteState state){
+        public void addState(FiniteState state) {
             this.states.add(state);
         }
 
@@ -163,5 +162,21 @@ public class FiniteAutomaton {
             return word;
         }
 
+    }
+
+
+    public List<FiniteState> getAllStates() {
+        List<FiniteState> result = new ArrayList<>();
+        addAllStates(result, initialState);
+        return result;
+    }
+
+    private void addAllStates(List<FiniteState> list, FiniteState finiteState) {
+        if (finiteState != null) {
+            list.add(finiteState);
+            for (FiniteTransition finiteTransition : finiteState.getTransitions())
+                addAllStates(list, finiteTransition.getState());
+
+        }
     }
 }
