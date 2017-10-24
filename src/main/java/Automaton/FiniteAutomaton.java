@@ -95,7 +95,13 @@ public class FiniteAutomaton {
                         sb.append(state.getName());
                         state.addValue();
                         final ArrayList<Integer> integers = this.concurrencyMap.get(sb.toString());
-                        if(directoryIndex >= integers.size()) integers.add(directoryIndex,state.getValue());
+                        if(directoryIndex == integers.size()) integers.add(directoryIndex,state.getValue());
+                        else if(directoryIndex > integers.size()) {
+                            for (int i = integers.size(); i < directoryIndex; i++) {
+                                integers.add(state.getValue()-1);
+                            }
+                            integers.add(directoryIndex,state.getValue());
+                        }
                         else integers.set(directoryIndex,state.getValue());
                         this.concurrencyMap.put(sb.toString(), integers);
                         this.evaluate(state,word,index+1, sb,directoryIndex);

@@ -14,15 +14,15 @@ public class Main {
 
     public static void main(String[] args) {
 
-/*        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
         System.out.println("Ingrese la ruta o el nombre del archivo que desea levantar: ");
         String path = scanner.nextLine();
         System.out.println("Ingrese la ruta o el nombre de la carpeta con los HTML: ");
-        String path2 = scanner.nextLine();*/
+        String path2 = scanner.nextLine();
         FiniteState q0 = new FiniteState("InitialState");
         FiniteAutomaton automat = new FiniteAutomaton(q0);
-        File[] files = new File("/Users/nicolasmoreno/Nico/Facultad/Mate Dis/TpMateDiscreta/src/resources/files").listFiles();
-        File file = new File("/Users/nicolasmoreno/Nico/Facultad/Mate Dis/TpMateDiscreta/example/example.txt");
+        File[] files = new File(path2).listFiles();
+        File file = new File(path);
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
@@ -44,11 +44,8 @@ public class Main {
         }
 
         generateIndexTxt(automat,files);
-
-//        automat.evaluate("muhila mundo hila mundo mundo mundo",0);
-
-        /*generateDOT(automat);
-        dotToPNG();*/
+        generateDOT(automat);
+        dotToPNG();
     }
 
     private static void generateIndexTxt(FiniteAutomaton automat, File[] files) {
@@ -56,7 +53,6 @@ public class Main {
         try{
             FileWriter writer = new FileWriter(new File("example/index.txt"));
             concurrencyMap.forEach((s, integers) -> {
-                System.out.println(s+'\n');
                 try {
                     writer.append(s+'\n');
                     int index = 0;
@@ -72,9 +68,11 @@ public class Main {
                         }
                         index++;
                     }
+                    writer.append('\n');
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
             });
             writer.flush();
             writer.close();
