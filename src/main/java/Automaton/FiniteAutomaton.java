@@ -1,10 +1,12 @@
 package Automaton;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 public class FiniteAutomaton {
-    private final FiniteState initialState;
+
+    private FiniteState initialState;
 
     public FiniteAutomaton(){
         this.initialState = new FiniteState("InitialState");
@@ -18,7 +20,7 @@ public class FiniteAutomaton {
      * Method that adds deterministically values to the automaton.
      * @param words
      */
-    public void add(final String... words){
+    public void addDeterministically(final String... words){
         for(String word: words){
             this.add(this.initialState,word,0);
         }
@@ -39,6 +41,28 @@ public class FiniteAutomaton {
                 if(state.getName().equals(""+actualChar)){
                     this.add(state, word, index+1);
                 }
+            }
+        }
+    }
+
+    /**
+     * Method that adds Non-deterministically values to the automaton.
+     * @param words
+     */
+    public void addNonDeterministically(final String... words){
+        for (String word: words){
+            FiniteState firstChar = new FiniteState(""+word.charAt(0));
+            this.initialState.addTransition(firstChar,word.charAt(0));
+            FiniteState lastState = firstChar;
+            for (int i = 1; i < word.length(); i++) {
+                FiniteState otherChar = new FiniteState(""+word.charAt(i));
+                if(i == word.length()-1) {
+                    otherChar.setFinal();
+                    otherChar.setValue(0);
+                }
+//                otherChar.addTransition(firstChar,firstChar.getName().charAt(0)); //TODO dudas sobre esto.
+                lastState.addTransition(otherChar, otherChar.getName().charAt(0));
+                lastState = otherChar;
             }
         }
     }
@@ -68,21 +92,47 @@ public class FiniteAutomaton {
 
     }
 
-    /**
-     * Method that checks if the automaton is nonDeterministic
-     * @return boolean representing if is non-deterministic-automaton
-     * TODO
-     */
-    private boolean isNonDeterministic(){
-        return true;
+    public void emptyAutomaton(){
+        this.initialState = new FiniteState("Initial State");
     }
 
-    public FiniteAutomaton transformToDeterministic(){
-        if(this.isNonDeterministic()){
-            FiniteAutomaton deterministicAutomaton = new FiniteAutomaton();
+    /**
+     * Method that transform this automat to Deterministic
+     */
+    public void transformToDeterministic(){
+        ArrayList<String> dictionary = new ArrayList<>();
+        this.initialState.getAllStates().forEach(finiteState -> this.fillDictionary(dictionary,finiteState));
+        FiniteState initialState = this.initialState;
+        this.emptyAutomaton();
+        this.iterateAutomaton(dictionary,this.initialState, initialState);
 
+    }
+
+    /**
+     * Method that transform this automaton to Deterministic
+     * @param dictionary chars presented in the automaton
+     * @param newState new automaton
+     * @param oldState old automaton iterating to transform and add it to the new automaton
+     */
+    private void iterateAutomaton(ArrayList<String> dictionary, FiniteState newState, FiniteState oldState) {
+        if(!(oldState.getAllStates().isEmpty())){
+            for(String character: dictionary) {
+                final List<FiniteState> states = oldState.getStates(character.charAt(0));
+                if(!(states.get(0).getName().equals("null"))){
+                    FiniteState auxState = new FiniteState(character);
+                    states.forEach(state -> {
+                        if(state.isFinal()) auxState.setFinal(); //Checkeamos si alguno de los estados encontrados es final...
+                    });
+                    if(newState.getStates(character.charAt(0)).get(0).getName().equals("null")) newState.addTransition(auxState, character.charAt(0));
+                    states.forEach( otherState -> this.iterateAutomaton(dictionary,newState.getStates(character.charAt(0)).get(0), otherState));
+                }
+            }
         }
-        return this;
+    }
+
+    private void fillDictionary(ArrayList<String> dictionary, FiniteState finiteState) {
+        if(!(dictionary.contains(finiteState.getName()))) dictionary.add(finiteState.getName());
+        finiteState.getAllStates().forEach(finiteState1 -> this.fillDictionary(dictionary,finiteState1));
     }
 
     public class Result{
