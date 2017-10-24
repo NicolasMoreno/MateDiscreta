@@ -3,28 +3,31 @@ import Automaton.FiniteState;
 import Automaton.FiniteTransition;
 import extras.GraphViz;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
+
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
         System.out.println("Ingrese la ruta o el nombre del archivo que desea levantar: ");
         String path = scanner.nextLine();
-
         FiniteState q0 = new FiniteState("InitialState");
-
         FiniteAutomaton automat = new FiniteAutomaton(q0);
-
-        //We should receive words from the .txt file
-//        automat.add("hello", "hello world", "world");
-        automat.add("hellu");
-        FiniteAutomaton.Result result3 = automat.evaluate("hello");
-        System.out.println("Result3 valid " + result3.isValid());
+        File file = new File(path);
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = br.readLine()) != null) {
+                automat.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        FiniteAutomaton.Result result = automat.evaluate("hola");
+        System.out.println("Result valid " + result.isValid());
 
         generateDOT(automat);
         dotToPNG();
