@@ -398,5 +398,4 @@ public class GraphViz
 
         this.graph = sb;
     }
-
-} // end of class GraphViz
+}

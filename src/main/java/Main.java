@@ -29,6 +29,8 @@ public class Main {
             while ((line = br.readLine()) != null) {
                 automat.addNonDeterministically(line);
             }
+            generateDOT(automat, "nfa");
+            dotToPNG("nfa");
             automat.transformToDeterministic();
             int indexFile = 0;
             for(File auxFile: files){
@@ -44,8 +46,8 @@ public class Main {
         }
 
         generateIndexTxt(automat,files);
-        generateDOT(automat);
-        dotToPNG();
+        generateDOT(automat, "dfa");
+        dotToPNG("dfa");
     }
 
     private static void generateIndexTxt(FiniteAutomaton automat, File[] files) {
@@ -83,26 +85,26 @@ public class Main {
     }
 
 
-    private static void generateDOT(FiniteAutomaton automaton) {
+    private static void generateDOT(FiniteAutomaton automaton, String filename) {
         List<FiniteState> states = automaton.getAllStates();
 
-        File file = new File("example/example.dot");
+        File file = new File("example/"+filename+".dot");
         try {
             FileWriter writer = new FileWriter(file);
             writer.append("digraph { \n\t rankdir = \"LR\"; \n");
 
             for (FiniteState finiteState: states) {
                 if(finiteState.isFinal()){
-                    writer.append("\t node [shape=doublecircle] Node").append(finiteState.getName()).append(" [label ="+'"').append(finiteState.getName()).append('"'+"];\n");
+                    writer.append("\t node [shape=doublecircle] Node").append(finiteState.getName().equals(" ") ? "_" : finiteState.getName()).append(" [label ="+'"').append(finiteState.getName()).append('"'+"];\n");
                 }else{
-                    writer.append("\t node [shape=circle] Node").append(finiteState.getName()).append(" [label ="+'"').append(finiteState.getName()).append('"'+"];\n");
+                    writer.append("\t node [shape=circle] Node").append(finiteState.getName().equals(" ") ? "_" : finiteState.getName()).append(" [label ="+'"').append(finiteState.getName()).append('"'+"];\n");
                 }
             }
 
             for (FiniteState finiteState : states){
-                String nodeName = finiteState.getName();
+                String nodeName = finiteState.getName().equals(" ") ? "_" : finiteState.getName();
                 for (FiniteTransition transition: finiteState.getTransitions()){
-                    writer.append("\t Node").append(nodeName).append(" -> Node").append(transition.getState().getName()).append("[label=").append(String.valueOf('"')).append(String.valueOf(transition.getChar())).append(String.valueOf('"')).append("];\n");
+                    writer.append("\t Node").append(nodeName).append(" -> Node").append(transition.getState().getName().equals(" ") ? "_" : transition.getState().getName()).append("[label=").append(String.valueOf('"')).append(String.valueOf(transition.getChar())).append(String.valueOf('"')).append("];\n");
                 }
             }
             writer.append("}");
@@ -116,9 +118,9 @@ public class Main {
      * Read the DOT source from a file,
      * convert to image and store the image in the file system.
      */
-    private static void dotToPNG()
+    private static void dotToPNG(String filename)
     {
-        String input = "example/example.dot";
+        String input = "example/"+filename+".dot";
 
         GraphViz gv = new GraphViz();
         gv.readSource(input);
@@ -127,7 +129,7 @@ public class Main {
         String type = "png";
         String representationType= "dot";
 
-        File out = new File("example/example." + type);
+        File out = new File("example/"+filename+"." + type);
         gv.writeGraphToFile( gv.getGraph(gv.getDotSource(), type, representationType), out);
     }
 }
