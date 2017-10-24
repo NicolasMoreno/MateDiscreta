@@ -1,12 +1,13 @@
 package Automaton;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 public class FiniteAutomaton {
     private final FiniteState initialState;
 
-    public FiniteAutomaton(){
+    public FiniteAutomaton() {
         this.initialState = new FiniteState("InitialState");
     }
 
@@ -16,28 +17,28 @@ public class FiniteAutomaton {
 
     /**
      * Method that adds deterministically values to the automaton.
+     *
      * @param words
      */
-    public void add(final String... words){
-        for(String word: words){
-            this.add(this.initialState,word,0);
+    public void add(final String... words) {
+        for (String word : words) {
+            this.add(this.initialState, word, 0);
         }
     }
 
-    private void add(FiniteState actualState, String word, int index){
-        if(index>= word.length()) return;
+    private void add(FiniteState actualState, String word, int index) {
+        if (index >= word.length()) return;
         final char actualChar = word.charAt(index);
         final List<FiniteState> states = actualState.getStates(actualChar);
-        if(states.get(0).getName().equals("null")){
-            FiniteState finiteState = new FiniteState(""+actualChar);
-            if(index == word.length()-1) finiteState.setFinal();
+        if (states.get(0).getName().equals("null")) {
+            FiniteState finiteState = new FiniteState("" + actualChar);
+            if (index == word.length() - 1) finiteState.setFinal();
             actualState.addTransition(finiteState, actualChar);
-            this.add(finiteState, word, index+1);
-        }
-        else{
-            for (FiniteState state : states){
-                if(state.getName().equals(""+actualChar)){
-                    this.add(state, word, index+1);
+            this.add(finiteState, word, index + 1);
+        } else {
+            for (FiniteState state : states) {
+                if (state.getName().equals("" + actualChar)) {
+                    this.add(state, word, index + 1);
                 }
             }
         }
@@ -47,22 +48,22 @@ public class FiniteAutomaton {
         return this.initialState;
     }
 
-    public Result evaluate(final String word){
+    public Result evaluate(final String word) {
         return evaluate(getInitialState(), word, 0, new Result(word));
     }
 
     private Result evaluate(FiniteState initialState, String word, int index, Result result) {
         result.addState(initialState);
-        if(index >= word.length()) return result;
+        if (index >= word.length()) return result;
         final List<FiniteState> states = initialState.getStates(word.charAt(index));
-        if(states.get(0).getName().equals("null")) {
+        if (states.get(0).getName().equals("null")) {
             result.addState(states.get(0));
             return result;
         }
         Result auxResult = null;
-        for (FiniteState state : states){
-            auxResult = evaluate(state,word,index+1, result);
-            if(auxResult.isValid()) return auxResult;
+        for (FiniteState state : states) {
+            auxResult = evaluate(state, word, index + 1, result);
+            if (auxResult.isValid()) return auxResult;
         }
         return auxResult;
 
@@ -70,22 +71,23 @@ public class FiniteAutomaton {
 
     /**
      * Method that checks if the automaton is nonDeterministic
+     *
      * @return boolean representing if is non-deterministic-automaton
      * TODO
      */
-    private boolean isNonDeterministic(){
+    private boolean isNonDeterministic() {
         return true;
     }
 
-    public FiniteAutomaton transformToDeterministic(){
-        if(this.isNonDeterministic()){
+    public FiniteAutomaton transformToDeterministic() {
+        if (this.isNonDeterministic()) {
             FiniteAutomaton deterministicAutomaton = new FiniteAutomaton();
 
         }
         return this;
     }
 
-    public class Result{
+    public class Result {
         private String word;
         private List<FiniteState> states;
 
@@ -94,11 +96,11 @@ public class FiniteAutomaton {
             this.states = new LinkedList<>();
         }
 
-        public boolean isValid(){
-            return this.states.get(this.states.size()-1).isFinal();
+        public boolean isValid() {
+            return this.states.get(this.states.size() - 1).isFinal();
         }
 
-        public void addState(FiniteState state){
+        public void addState(FiniteState state) {
             this.states.add(state);
         }
 
@@ -106,5 +108,21 @@ public class FiniteAutomaton {
             return word;
         }
 
+    }
+
+
+    public List<FiniteState> getAllStates() {
+        List<FiniteState> result = new ArrayList<>();
+        addAllStates(result, initialState);
+        return result;
+    }
+
+    private void addAllStates(List<FiniteState> list, FiniteState finiteState) {
+        if (finiteState != null) {
+            list.add(finiteState);
+            for (FiniteTransition finiteTransition : finiteState.getTransitions())
+                addAllStates(list, finiteTransition.getState());
+
+        }
     }
 }

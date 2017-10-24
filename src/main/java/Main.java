@@ -12,6 +12,7 @@ import guru.nidi.graphviz.engine.Graphviz;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 import static guru.nidi.graphviz.model.Factory.*;
 
@@ -83,19 +84,27 @@ public class Main {
     }
 
     //TODO
-    private static Node graphic(Node node, FiniteState state) {
+    private static void graphic(FiniteState state) {
+        List<FiniteState> states = state.getAllStates();
+
         File file = new File("example/example.dot");
         try {
             FileWriter writer = new FileWriter(file);
             writer.append("digraph { \n rankdir = \"LR\"; \n");
-            for (FiniteState finiteState: state.getAllStates()) {
+
+            for (FiniteState finiteState: states) {
                 if(finiteState.isFinal()){
                     writer.append("node [shape=doublecircle] Node" + finiteState.getName() + " [label =" + finiteState.getName() + "];");
                 }else{
                     writer.append("node [shape=circle] Node").append(finiteState.getName()).append(" [label =").append(finiteState.getName()).append("];");
                 }
-                for (FiniteTransition finiteTransition: finiteState.getTransitions()) {
-//                    writer.append(finiteTransition.getChar() + "->" + finiteTransition.)
+            }
+
+            for (FiniteState finiteState : states){
+                String nodeName = finiteState.getName();
+                for (FiniteTransition transition: finiteState.getTransitions()){
+                    writer.append("Node"+nodeName+" -> Node"+transition.getState().getName()+ "[label=["+'"'+
+                            transition.getChar()+'"'+"];");
                 }
             }
             writer.append("\n}");
