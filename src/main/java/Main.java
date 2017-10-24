@@ -33,39 +33,39 @@ public class Main {
             e2.printStackTrace();
         }*/
 
-        try{
-            Graph g = graph("example1").directed().with(node("a").link(node("b")).link(node("c").link(node("c"))));
-            Graphviz.fromGraph(g).width(200).render(Format.PNG).toFile(new File("example/ex1.png"));
-        }catch (IOException e){
-            System.out.println(e);
-        }
-
-        try {
-
-            Node
-                    init = node("a"),
-                    execute = node("b"),
-                    compare = node("c"),
-                    mkString = node("d").with(Label.of("make a\nstring")),
-                    printf = node("e");
-
-            Graph g = graph("example2").directed().with(
-                    node("q0").link(
-                            to(node("q1").link(execute)).with("weight", 8),
-                            to(init),
-                            node("q2"),
-                            to(printf).with(Label.of("transition")),
-                            execute.link(
-                                    graph().with(mkString, printf),
-                                    to(compare),
-                                    init.link(mkString)
-                            )
-                    )
-            );
-            Graphviz.fromGraph(g).width(200).render(Format.PNG).toFile(new File("example/ex1.png"));
-        } catch (IOException e) {
-            System.out.println(e);
-        }
+//        try{
+//            Graph g = graph("example1").directed().with(node("a").link(node("b")).link(node("c").link(node("c"))));
+//            Graphviz.fromGraph(g).width(200).render(Format.PNG).toFile(new File("example/ex1.png"));
+//        }catch (IOException e){
+//            System.out.println(e);
+//        }
+//
+//        try {
+//
+//            Node
+//                    init = node("a"),
+//                    execute = node("b"),
+//                    compare = node("c"),
+//                    mkString = node("d").with(Label.of("make a\nstring")),
+//                    printf = node("e");
+//
+//            Graph g = graph("example2").directed().with(
+//                    node("q0").link(
+//                            to(node("q1").link(execute)).with("weight", 8),
+//                            to(init),
+//                            node("q2"),
+//                            to(printf).with(Label.of("transition")),
+//                            execute.link(
+//                                    graph().with(mkString, printf),
+//                                    to(compare),
+//                                    init.link(mkString)
+//                            )
+//                    )
+//            );
+//            Graphviz.fromGraph(g).width(200).render(Format.PNG).toFile(new File("example/ex1.png"));
+//        } catch (IOException e) {
+//            System.out.println(e);
+//        }
 
 
         /*
@@ -81,7 +81,7 @@ public class Main {
         FiniteAutomaton.Result result3 = automat.evaluate("hello");
         System.out.println("Result3 valid " + result3.isValid());
 
-//        graphicInitialState("MANZAEXAMPLE", automat.getInitialState());
+        graphic(automat.getInitialState());
 
     }
 
@@ -110,15 +110,7 @@ public class Main {
                 }
             }
             writer.append("\n}");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void graphDot(){
-        String command = "dot -Tpng " + "-o " + "outfile.png example.gv";
-        try {
-            Runtime.getRuntime().exec(command);
+            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
