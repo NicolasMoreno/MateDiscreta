@@ -3,6 +3,8 @@ import Automaton.FiniteAutomatonBuilder;
 import Automaton.FiniteState;
 import Automaton.FiniteTransition;
 import HtmlReader.HtmlReader;
+import extras.GraphViz;
+import guru.nidi.graphviz.attribute.Attributed;
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.attribute.Style;
@@ -12,6 +14,7 @@ import guru.nidi.graphviz.engine.Graphviz;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collection;
 
 import static guru.nidi.graphviz.model.Factory.*;
 
@@ -28,7 +31,6 @@ public class Main {
         } catch (IOException e2){
             e2.printStackTrace();
         }*/
-
 
         try{
             Graph g = graph("example1").directed().with(node("a").link(node("b")).link(node("c").link(node("c"))));
@@ -102,5 +104,33 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static void graphDot(){
+        String command = "dot -Tpng " + "-o " + "outfile.png example.gv";
+        try {
+            Runtime.getRuntime().exec(command);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Read the DOT source from a file,
+     * convert to image and store the image in the file system.
+     */
+    private static void dotToPNG()
+    {
+        String input = "/example/example.dot";
+
+        GraphViz gv = new GraphViz();
+        gv.readSource(input);
+        System.out.println(gv.getDotSource());
+
+        String type = "png";
+        String representationType= "dot";
+
+        File out = new File("/example/example." + type);
+        gv.writeGraphToFile( gv.getGraph(gv.getDotSource(), type, representationType), out);
     }
 }
