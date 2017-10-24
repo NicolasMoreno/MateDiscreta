@@ -1,6 +1,7 @@
 package HtmlReader;
 
 import java.io.*;
+import java.util.Scanner;
 
 public class HtmlReader {
     private File htmlFile;
@@ -12,7 +13,9 @@ public class HtmlReader {
     }
 
     public String readLine() throws IOException {
-        return this.reader.readLine();
+        final String line = this.reader.readLine();
+        if(line == null) return null;
+        else return line.replaceAll("<[^>]*>", "").trim();
     }
 
     public File getFile(){

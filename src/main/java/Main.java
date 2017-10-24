@@ -1,6 +1,7 @@
 import Automaton.FiniteAutomaton;
 import Automaton.FiniteState;
 import Automaton.FiniteTransition;
+import HtmlReader.HtmlReader;
 import extras.GraphViz;
 
 import java.io.*;
@@ -11,26 +12,37 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Scanner scanner = new Scanner(System.in);
+/*        Scanner scanner = new Scanner(System.in);
         System.out.println("Ingrese la ruta o el nombre del archivo que desea levantar: ");
         String path = scanner.nextLine();
+        System.out.println("Ingrese la ruta o el nombre de la carpeta con los HTML: ");
+        String path2 = scanner.nextLine();*/
         FiniteState q0 = new FiniteState("InitialState");
         FiniteAutomaton automat = new FiniteAutomaton(q0);
-        File file = new File(path);
+        File[] files = new File("/Users/nicolasmoreno/Nico/Facultad/Mate Dis/TpMateDiscreta/src/resources/files").listFiles();
+        File file = new File("/Users/nicolasmoreno/Nico/Facultad/Mate Dis/TpMateDiscreta/example/example.txt");
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
             while ((line = br.readLine()) != null) {
-                automat.add(line);
+                automat.addNonDeterministically(line);
+            }
+            automat.transformToDeterministic();
+            for(File auxFile: files){
+                HtmlReader htmlReader = new HtmlReader(auxFile.getPath());
+                String line2;
+                while ((line2 = htmlReader.readLine()) != null) {
+                    System.out.println(line2);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        FiniteAutomaton.Result result = automat.evaluate("hola");
-        System.out.println("Result valid " + result.isValid());
 
-        generateDOT(automat);
-        dotToPNG();
+//        automat.evaluate("muhila mundo hila mundo mundo mundo",0);
+
+        /*generateDOT(automat);
+        dotToPNG();*/
     }
 
 
