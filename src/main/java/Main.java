@@ -16,17 +16,17 @@ public class Main {
         FiniteAutomaton automat = new FiniteAutomaton(q0);
 
         //We should receive words from the .txt file
-        automat.add("hello", "hello world", "world");
+//        automat.add("hello", "hello world", "world");
         automat.add("hellu");
         FiniteAutomaton.Result result3 = automat.evaluate("hello");
         System.out.println("Result3 valid " + result3.isValid());
 
-        graphic(automat);
-//        dotToPNG();
+        generateDOT(automat);
+        dotToPNG();
     }
 
-    //TODO
-    private static void graphic(FiniteAutomaton automaton) {
+
+    private static void generateDOT(FiniteAutomaton automaton) {
         List<FiniteState> states = automaton.getAllStates();
 
         File file = new File("example/example.dot");
@@ -36,16 +36,16 @@ public class Main {
 
             for (FiniteState finiteState: states) {
                 if(finiteState.isFinal()){
-                    writer.append("\t node [shape=doublecircle] Node").append(finiteState.getName()).append(" [label =").append(finiteState.getName()).append("];\n");
+                    writer.append("\t node [shape=doublecircle] Node").append(finiteState.getName()).append(" [label ="+'"').append(finiteState.getName()).append('"'+"];\n");
                 }else{
-                    writer.append("\t node [shape=circle] Node").append(finiteState.getName()).append(" [label =").append(finiteState.getName()).append("];\n");
+                    writer.append("\t node [shape=circle] Node").append(finiteState.getName()).append(" [label ="+'"').append(finiteState.getName()).append('"'+"];\n");
                 }
             }
 
             for (FiniteState finiteState : states){
                 String nodeName = finiteState.getName();
                 for (FiniteTransition transition: finiteState.getTransitions()){
-                    writer.append("\t Node").append(nodeName).append(" -> Node").append(transition.getState().getName()).append("[label=[").append(String.valueOf('"')).append(String.valueOf(transition.getChar())).append(String.valueOf('"')).append("];\n");
+                    writer.append("\t Node").append(nodeName).append(" -> Node").append(transition.getState().getName()).append("[label=").append(String.valueOf('"')).append(String.valueOf(transition.getChar())).append(String.valueOf('"')).append("];\n");
                 }
             }
             writer.append("}");
