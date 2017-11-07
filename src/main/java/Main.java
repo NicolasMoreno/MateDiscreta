@@ -63,7 +63,7 @@ public class Main {
                             writer.append(files[index].getName()+'\n');
                             writer.append(integer.toString()+'\n');
                         }
-                        else if(!(integer - integers.get(index-1) == 0)){
+                        else if(index != 0 && !(integer - integers.get(index-1) == 0)){
                             writer.append(files[index].getName()+'\n');
                             Integer result = integer - integers.get(index-1);
                             writer.append(result.toString()+'\n');
@@ -85,33 +85,48 @@ public class Main {
     }
 
 
+
     private static void generateDOT(FiniteAutomaton automaton, String filename) {
         List<FiniteState> states = automaton.getAllStates();
-
         File file = new File(filename+".dot");
         try {
             FileWriter writer = new FileWriter(file);
             writer.append("digraph { \n\t rankdir = \"LR\"; \n");
-
+            Integer index = 0;
             for (FiniteState finiteState: states) {
                 if(finiteState.isFinal()){
-                    writer.append("\t node [shape=doublecircle] Node").append(finiteState.getName().equals(" ") ? "_" : finiteState.getName()).append(" [label ="+'"').append(finiteState.getName()).append('"'+"];\n");
+                    writer.append("\t node [shape=doublecircle] Node").append(finiteState.getName().equals(" ") ? "_" : finiteState.getName().concat(index.toString())).append(" [label ="+'"').append(finiteState.getName().concat(index.toString())).append('"'+"];\n");
                 }else{
-                    writer.append("\t node [shape=circle] Node").append(finiteState.getName().equals(" ") ? "_" : finiteState.getName()).append(" [label ="+'"').append(finiteState.getName()).append('"'+"];\n");
+                    writer.append("\t node [shape=circle] Node").append(finiteState.getName().equals(" ") ? "_" : finiteState.getName().concat(index.toString())).append(" [label ="+'"').append(finiteState.getName().concat(index.toString())).append('"'+"];\n");
                 }
+                index++;
             }
-
+            Integer indexx = 0;
             for (FiniteState finiteState : states){
-                String nodeName = finiteState.getName().equals(" ") ? "_" : finiteState.getName();
+                String nodeName = finiteState.getName().equals(" ") ? "_" : finiteState.getName().concat(indexx.toString());
                 for (FiniteTransition transition: finiteState.getTransitions()){
-                    writer.append("\t Node").append(nodeName).append(" -> Node").append(transition.getState().getName().equals(" ") ? "_" : transition.getState().getName()).append("[label=").append(String.valueOf('"')).append(String.valueOf(transition.getChar())).append(String.valueOf('"')).append("];\n");
+                    writer.append("\t Node").append(nodeName).append(" -> Node").append(transition.getState().getName().equals(" ") ? "_" : transition.getState().getName().concat(indexx.toString())).append("[label=").append(String.valueOf('"')).append(String.valueOf(transition.getChar())).append(String.valueOf('"')).append("];\n");
                 }
+                indexx++;
             }
             writer.append("}");
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static String overState(FiniteState state, int stateNumber) {
+        String nodes = "";
+        while(!state.isFinal()){
+            nodes.concat("\t node [shape=circle] Node").concat(state.getName().equals(" ") ? "_".concat(String.valueOf(stateNumber)) : state.getName().concat(String.valueOf(stateNumber))).concat(" [label ="+'"').concat(state.getName().concat(String.valueOf(stateNumber)).concat('"'+"];\n"));
+            for (FiniteTransition transition: state.getTransitions()) {
+                overState(transition.getState(), stateNumber);
+                stateNumber ++;
+            }
+        }
+        nodes.concat("\t node [shape=doublecircle] Node").concat(state.getName().equals(" ") ? "_".concat(String.valueOf(stateNumber)) : state.getName().concat(String.valueOf(stateNumber))).concat(" [label ="+'"').concat(state.getName().concat(String.valueOf(stateNumber)).concat('"'+"];\n"));
+        return nodes;
     }
 
     /**
