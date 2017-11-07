@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GraphImpl<T> implements GraphInterface<T>  {
+
     private ArrayList<T> vertexArray;
     private boolean[][] edges;
     private int index;

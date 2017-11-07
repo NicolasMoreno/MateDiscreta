@@ -115,7 +115,7 @@ public class FiniteAutomaton {
     }
 
     public void emptyAutomaton(){
-        this.initialState = new FiniteState("Initial State");
+        this.initialState = new FiniteState("InitialState");
     }
 
     /**

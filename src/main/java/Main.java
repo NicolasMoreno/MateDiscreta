@@ -53,7 +53,7 @@ public class Main {
     private static void generateIndexTxt(FiniteAutomaton automat, File[] files) {
         final Map<String, ArrayList<Integer>> concurrencyMap = automat.getConcurrencyMap();
         try{
-            FileWriter writer = new FileWriter(new File("index.txt"));
+            FileWriter writer = new FileWriter(new File("example/index.txt"));
             concurrencyMap.forEach((s, integers) -> {
                 try {
                     writer.append(s+'\n');
@@ -92,20 +92,25 @@ public class Main {
         try {
             FileWriter writer = new FileWriter(file);
             writer.append("digraph { \n\t rankdir = \"LR\"; \n");
-            Integer index = 0;
+            int index = 0;
             for (FiniteState finiteState: states) {
+                String stateName = finiteState.getName().equals(" ") ? "_".concat(String.valueOf(index)) : finiteState.getName().concat(String.valueOf(index));
                 if(finiteState.isFinal()){
-                    writer.append("\t node [shape=doublecircle] Node").append(finiteState.getName().equals(" ") ? "_" : finiteState.getName().concat(index.toString())).append(" [label ="+'"').append(finiteState.getName().concat(index.toString())).append('"'+"];\n");
+                    writer.append("\t node [shape=doublecircle] Node").append(stateName).append(" [label ="+'"').append(stateName).append('"'+"];\n");
                 }else{
-                    writer.append("\t node [shape=circle] Node").append(finiteState.getName().equals(" ") ? "_" : finiteState.getName().concat(index.toString())).append(" [label ="+'"').append(finiteState.getName().concat(index.toString())).append('"'+"];\n");
+                    writer.append("\t node [shape=circle] Node").append(stateName).append(" [label ="+'"').append(stateName).append('"'+"];\n");
                 }
                 index++;
             }
-            Integer indexx = 0;
+//            writer.append(declareStates(automaton.getInitialState(), 0));
+            int indexx = 0;
             for (FiniteState finiteState : states){
-                String nodeName = finiteState.getName().equals(" ") ? "_" : finiteState.getName().concat(indexx.toString());
+                String nodeName = finiteState.getName().equals(" ") ? "_".concat(String.valueOf(indexx)) : finiteState.getName().concat(String.valueOf(indexx));
+                int indexxx = 0;
                 for (FiniteTransition transition: finiteState.getTransitions()){
-                    writer.append("\t Node").append(nodeName).append(" -> Node").append(transition.getState().getName().equals(" ") ? "_" : transition.getState().getName().concat(indexx.toString())).append("[label=").append(String.valueOf('"')).append(String.valueOf(transition.getChar())).append(String.valueOf('"')).append("];\n");
+                    String stateName = transition.getState().getName().equals(" ") ? "_".concat(String.valueOf(indexxx)) : transition.getState().getName().concat(String.valueOf(indexxx));
+                    writer.append("\t Node").append(nodeName).append(" -> Node").append(stateName).append("[label=").append(String.valueOf('"')).append(stateName).append(String.valueOf('"')).append("];\n");
+                    indexxx++;
                 }
                 indexx++;
             }
@@ -116,18 +121,28 @@ public class Main {
         }
     }
 
-    private static String overState(FiniteState state, int stateNumber) {
-        String nodes = "";
-        while(!state.isFinal()){
-            nodes.concat("\t node [shape=circle] Node").concat(state.getName().equals(" ") ? "_".concat(String.valueOf(stateNumber)) : state.getName().concat(String.valueOf(stateNumber))).concat(" [label ="+'"').concat(state.getName().concat(String.valueOf(stateNumber)).concat('"'+"];\n"));
-            for (FiniteTransition transition: state.getTransitions()) {
-                overState(transition.getState(), stateNumber);
-                stateNumber ++;
-            }
-        }
-        nodes.concat("\t node [shape=doublecircle] Node").concat(state.getName().equals(" ") ? "_".concat(String.valueOf(stateNumber)) : state.getName().concat(String.valueOf(stateNumber))).concat(" [label ="+'"').concat(state.getName().concat(String.valueOf(stateNumber)).concat('"'+"];\n"));
-        return nodes;
-    }
+//    private static String declareStates(FiniteState state, int stateNumber) {
+//        String nodes = "";
+//        String stateName = state.getName().equals(" ") ? "_".concat(String.valueOf(stateNumber)) : state.getName().concat(String.valueOf(stateNumber));
+//        if(!state.isFinal()){
+//            nodes = nodes.concat("\t node [shape=circle] Node").concat(stateName).concat(" [label ="+'"').concat(stateName).concat('"'+"];\n");
+//            for (FiniteTransition transition: state.getTransitions()) {
+//                nodes = nodes.concat(declareStates(transition.getState(), stateNumber));
+//                stateNumber ++;
+//            }
+//        }
+//        nodes = nodes.concat("\t node [shape=doublecircle] Node").concat(stateName).concat(" [label ="+'"').concat(stateName).concat('"'+"];\n");
+//        return nodes;
+//    }
+
+//    private static String goOverStates(FiniteState state, int stateNumber) {
+//        String nodes = "";
+//        String stateName = state.getName().equals(" ") ? "_".concat(String.valueOf(stateNumber)) : state.getName().concat(String.valueOf(stateNumber));
+//        if(!state.isFinal()){
+//            nodes = nodes.concat("\t Node").concat(stateName).concat(" -> Node").concat()
+//        }
+//        return nodes;
+//    }
 
     /**
      * Read the DOT source from a file,

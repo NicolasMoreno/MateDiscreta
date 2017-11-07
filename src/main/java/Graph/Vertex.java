@@ -1,8 +1,10 @@
 package Graph;
 
 public class Vertex {
+
     private Vertex value;
     private boolean isAcceptanceState;
+
     //TODO No estoy seguro si esto es necesario
     public Vertex(Vertex value, boolean isAcceptanceState){
         this.value = value;
