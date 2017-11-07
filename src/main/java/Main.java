@@ -30,7 +30,7 @@ public class Main {
                 automat.addNonDeterministically(line);
             }
 //            generateDOT(automat, "nfa");
-            generateNonDeterministicDOT(automat.getInitialState(), "nfa");
+            generateDOT(automat.getInitialState(), "nfa");
             dotToPNG("nfa");
             automat.transformToDeterministic();
             int indexFile = 0;
@@ -47,6 +47,8 @@ public class Main {
         }
 
         generateIndexTxt(automat,files);
+        generateDOT(automat.getInitialState(), "dfa");
+        dotToPNG("dfa");
         /*generateDOT(automat, "dfa");
         dotToPNG("dfa");*/
     }
@@ -86,7 +88,7 @@ public class Main {
     }
 
 
-    private static void generateNonDeterministicDOT(FiniteState state, String filename){
+    private static void generateDOT(FiniteState state, String filename){
         File file = new File(filename+".dot");
         int[] occurrences = new int[256];
         try {
@@ -132,6 +134,7 @@ public class Main {
             e.printStackTrace();
         }
     }
+
 
     private static void generateDOT(FiniteAutomaton automaton, String filename) {
         List<FiniteState> states = automaton.getAllStates();
