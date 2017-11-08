@@ -17,7 +17,7 @@ public class FiniteState {
         this.transitions = new LinkedList<>();
     }
 
-    public void addTransition(FiniteState finiteState, char... charList){
+    void addTransition(FiniteState finiteState, char... charList){
         for(char c : charList){
             FiniteTransition finiteTransition = new FiniteTransition(finiteState,c);
             if(this.transitions.contains(finiteTransition)){
@@ -27,7 +27,7 @@ public class FiniteState {
         }
     }
 
-    public List<FiniteState> getAllStates(){
+    List<FiniteState> getAllStates(){
         ArrayList<FiniteState> states = new ArrayList<>();
         for (FiniteTransition transition: this.transitions){
             states.add(transition.getState());
@@ -35,7 +35,7 @@ public class FiniteState {
         return states;
     }
 
-    public List<FiniteState> getStates(char c){
+    List<FiniteState> getStates(char c){
         List<FiniteState> states = new LinkedList<>();
         for(FiniteTransition finiteTransition: this.transitions){
             if(finiteTransition.getChar() == c){
@@ -50,7 +50,7 @@ public class FiniteState {
         return isFinal;
     }
 
-    public void setFinal() {
+    void setFinal() {
         isFinal = true;
         this.setValue(0);
     }
@@ -59,15 +59,11 @@ public class FiniteState {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getValue() {
+    Integer getValue() {
         return value;
     }
 
-    public void setValue(Integer value) {
+    void setValue(Integer value) {
         this.value = value;
     }
 
@@ -75,5 +71,5 @@ public class FiniteState {
         return transitions;
     }
 
-    public void addValue() {this.value = value+1; }
+    void addValue() {this.value = value+1; }
 }

@@ -132,8 +132,7 @@ public class Main {
      * Read the DOT source from a file,
      * convert to image and store the image in the file system.
      */
-    private static void dotToPNG(String filename)
-    {
+    private static void dotToPNG(String filename) {
         String input = filename+".dot";
 
         GraphViz gv = new GraphViz();
@@ -144,6 +143,10 @@ public class Main {
         String representationType= "dot";
 
         File out = new File(filename+"." + type);
-        gv.writeGraphToFile( gv.getGraph(gv.getDotSource(), type, representationType), out);
+        try {
+            gv.writeGraphToFile( gv.getGraph(gv.getDotSource(), type, representationType), out);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

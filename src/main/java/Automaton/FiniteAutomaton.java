@@ -7,49 +7,13 @@ public class FiniteAutomaton {
     private FiniteState initialState;
     private Map<String, ArrayList<Integer>> concurrencyMap;
 
-    public FiniteAutomaton() {
-        this.initialState = new FiniteState("InitialState");
-        this.concurrencyMap = new HashMap<>();
-    }
-
     public FiniteAutomaton(final FiniteState initialState) {
         this.initialState = initialState;
         this.concurrencyMap = new HashMap<>();
     }
 
     /**
-     * Method that adds deterministically values to the automaton.
-     * @param words
-     */
-    public void addDeterministically(final String... words){
-        for(String word: words){
-            this.concurrencyMap.put(word,new ArrayList<>());
-            word = word.toLowerCase().trim();
-            this.add(this.initialState,word,0);
-        }
-    }
-
-    private void add(FiniteState actualState, String word, int index) {
-        if (index >= word.length()) return;
-        final char actualChar = word.charAt(index);
-        final List<FiniteState> states = actualState.getStates(actualChar);
-        if (states.get(0).getName().equals("null")) {
-            FiniteState finiteState = new FiniteState("" + actualChar);
-            if (index == word.length() - 1) finiteState.setFinal();
-            actualState.addTransition(finiteState, actualChar);
-            this.add(finiteState, word, index + 1);
-        } else {
-            for (FiniteState state : states) {
-                if (state.getName().equals("" + actualChar)) {
-                    this.add(state, word, index + 1);
-                }
-            }
-        }
-    }
-
-    /**
      * Method that adds Non-deterministically values to the automaton.
-     * @param words
      */
     public void addNonDeterministically(final String... words){
         for (String word: words){
@@ -114,7 +78,7 @@ public class FiniteAutomaton {
 
     }
 
-    public void emptyAutomaton(){
+    private void emptyAutomaton(){
         this.initialState = new FiniteState("InitialState");
     }
 
@@ -159,43 +123,5 @@ public class FiniteAutomaton {
 
     public Map<String, ArrayList<Integer>> getConcurrencyMap() {
         return concurrencyMap;
-    }
-
-    public List<FiniteState> getAllStates() {
-        List<FiniteState> result = new ArrayList<>();
-        addAllStates(result, initialState);
-        return result;
-    }
-
-    private void addAllStates(List<FiniteState> list, FiniteState finiteState) {
-        if (finiteState != null) {
-            list.add(finiteState);
-            for (FiniteTransition finiteTransition : finiteState.getTransitions())
-                addAllStates(list, finiteTransition.getState());
-
-        }
-    }
-
-    public class Result {
-        private String word;
-        private List<FiniteState> states;
-
-        public Result(String word) {
-            this.word = word;
-            this.states = new LinkedList<>();
-        }
-
-        public boolean isValid() {
-            return this.states.get(this.states.size() - 1).isFinal();
-        }
-
-        public void addState(FiniteState state) {
-            this.states.add(state);
-        }
-
-        public String getWord() {
-            return word;
-        }
-
     }
 }

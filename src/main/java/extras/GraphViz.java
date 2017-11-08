@@ -1,8 +1,5 @@
 package extras;
 
-/**
- * Created by Sebas Belaustegui on 23/10/2017.
- */
 // GraphViz.java - a simple API to call dot from Java programs
 
 /*$Id$*/
@@ -28,13 +25,7 @@ package extras;
  ******************************************************************************
  */
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.InputStreamReader;
+import java.io.*;
 
 /**
  * <dl>
@@ -93,33 +84,6 @@ public class GraphViz
     private final int[] dpiSizes = {46, 51, 57, 63, 70, 78, 86, 96, 106, 116, 128, 141, 155, 170, 187, 206, 226, 249};
 
     /**
-     * Define the index in the image size array.
-     */
-    private int currentDpiPos = 7;
-
-    /**
-     * Increase the image size (dpi).
-     */
-    public void increaseDpi() {
-        if ( this.currentDpiPos < (this.dpiSizes.length - 1) ) {
-            ++this.currentDpiPos;
-        }
-    }
-
-    /**
-     * Decrease the image size (dpi).
-     */
-    public void decreaseDpi() {
-        if (this.currentDpiPos > 0) {
-            --this.currentDpiPos;
-        }
-    }
-
-    public int getImageDpi() {
-        return this.dpiSizes[this.currentDpiPos];
-    }
-
-    /**
      * The source of the graph written in dot language.
      */
     private StringBuilder graph = new StringBuilder();
@@ -155,47 +119,11 @@ public class GraphViz
     }
 
     /**
-     * Configurable Constructor with path to executable dot and a temp dir
-     *
-     * @param executable absolute path to dot executable
-     * @param tempDir absolute path to temp directory
-     */
-    public GraphViz(String executable, String tempDir) {
-        this.executable = executable;
-        this.tempDir = tempDir;
-    }
-
-    /**
      * Returns the graph's source description in dot language.
      * @return Source of the graph in dot language.
      */
     public String getDotSource() {
         return this.graph.toString();
-    }
-
-    /**
-     * Adds a string to the graph's source (without newline).
-     */
-    public void add(String line) {
-        this.graph.append(line);
-    }
-
-    /**
-     * Adds a string to the graph's source (with newline).
-     */
-    public void addln(String line) {
-        this.graph.append(line + "\n");
-    }
-
-    /**
-     * Adds a newline to the graph's source.
-     */
-    public void addln() {
-        this.graph.append('\n');
-    }
-
-    public void clearGraph(){
-        this.graph = new StringBuilder();
     }
 
     /**
@@ -216,14 +144,14 @@ public class GraphViz
     public byte[] getGraph(String dot_source, String type, String representationType)
     {
         File dot;
-        byte[] img_stream = null;
+        byte[] img_stream;
 
         try {
             dot = writeDotSourceToFile(dot_source);
             if (dot != null)
             {
                 img_stream = get_img_stream(dot, type, representationType);
-                if (dot.delete() == false) {
+                if (!dot.delete()) {
                     System.err.println("Warning: " + dot.getAbsolutePath() + " could not be deleted!");
                 }
                 return img_stream;
@@ -235,29 +163,12 @@ public class GraphViz
     /**
      * Writes the graph's image in a file.
      * @param img   A byte array containing the image of the graph.
-     * @param file  Name of the file to where we want to write.
-     * @return Success: 1, Failure: -1
-     */
-    public int writeGraphToFile(byte[] img, String file)
-    {
-        File to = new File(file);
-        return writeGraphToFile(img, to);
-    }
-
-    /**
-     * Writes the graph's image in a file.
-     * @param img   A byte array containing the image of the graph.
      * @param to    A File object to where we want to write.
-     * @return Success: 1, Failure: -1
      */
-    public int writeGraphToFile(byte[] img, File to)
-    {
-        try {
-            FileOutputStream fos = new FileOutputStream(to);
-            fos.write(img);
-            fos.close();
-        } catch (java.io.IOException ioe) { return -1; }
-        return 1;
+    public void writeGraphToFile(byte[] img, File to) throws IOException {
+        FileOutputStream fos = new FileOutputStream(to);
+        fos.write(img);
+        fos.close();
     }
 
     /**
@@ -285,21 +196,17 @@ public class GraphViz
             img = File.createTempFile("graph_", "." + type, new File(this.tempDir));
             Runtime rt = Runtime.getRuntime();
 
-            // patch by Mike Chenault
-            // representation type with -K argument by Olivier Duplouy
-            String[] args = { executable, "-T" + type, "-K" + representationType, "-Gdpi=" + dpiSizes[this.currentDpiPos], dot.getAbsolutePath(), "-o", img.getAbsolutePath() };
+            int currentDpiPos = 7;
+            String[] args = { executable, "-T" + type, "-K" + representationType, "-Gdpi=" + dpiSizes[currentDpiPos], dot.getAbsolutePath(), "-o", img.getAbsolutePath() };
             Process p = rt.exec(args);
             p.waitFor();
 
             FileInputStream in = new FileInputStream(img.getAbsolutePath());
             img_stream = new byte[in.available()];
             in.read(img_stream);
-            // Close it if we need to
-            if( in != null ) {
-                in.close();
-            }
+            in.close();
 
-            if (img.delete() == false) {
+            if (!img.delete()) {
                 System.err.println("Warning: " + img.getAbsolutePath() + " could not be deleted!");
             }
         }
@@ -336,39 +243,6 @@ public class GraphViz
             return null;
         }
         return temp;
-    }
-
-    /**
-     * Returns a string that is used to start a graph.
-     * @return A string to open a graph.
-     */
-    public String start_graph() {
-        return "digraph G {";
-    }
-
-    /**
-     * Returns a string that is used to end a graph.
-     * @return A string to close a graph.
-     */
-    public String end_graph() {
-        return "}";
-    }
-
-    /**
-     * Takes the cluster or subgraph id as input parameter and returns a string
-     * that is used to start a subgraph.
-     * @return A string to open a subgraph.
-     */
-    public String start_subgraph(int clusterid) {
-        return "subgraph cluster_" + clusterid + " {";
-    }
-
-    /**
-     * Returns a string that is used to end a graph.
-     * @return A string to close a graph.
-     */
-    public String end_subgraph() {
-        return "}";
     }
 
     /**
