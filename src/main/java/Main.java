@@ -59,17 +59,17 @@ public class Main {
             FileWriter writer = new FileWriter(new File("example/index.txt"));
             concurrencyMap.forEach((s, integers) -> {
                 try {
-                    writer.append(s+'\n');
+                    writer.append(s).append(String.valueOf('\n'));
                     int index = 0;
                     for( Integer integer: integers){
                         if(index == 0 && !(integer.equals(0))){
-                            writer.append(files[index].getName()+'\n');
-                            writer.append(integer.toString()+'\n');
+                            writer.append(files[index].getName()).append(String.valueOf('\n'));
+                            writer.append(integer.toString()).append(String.valueOf('\n'));
                         }
                         else if(index != 0 && !(integer - integers.get(index-1) == 0)){
-                            writer.append(files[index].getName()+'\n');
+                            writer.append(files[index].getName()).append(String.valueOf('\n'));
                             Integer result = integer - integers.get(index-1);
-                            writer.append(result.toString()+'\n');
+                            writer.append(result.toString()).append(String.valueOf('\n'));
                         }
                         index++;
                     }
@@ -94,10 +94,8 @@ public class Main {
         try {
             FileWriter writer = new FileWriter(file);
             writer.append("digraph { \n\t rankdir = \"LR\"; \n");
-            writer.append("\t node [shape=circle] ").append(state.getName().concat("0;\n")); //.append(" [label ="+'"').append(state.getName()).append('"'+"];\n");
-            state.getTransitions().forEach( transition -> {
-                generate(state ,transition, writer, occurrences);
-            });
+            writer.append("\t node [shape=circle] ").append(state.getName().concat("0;\n"));
+            state.getTransitions().forEach( transition -> generate(state ,transition, writer, occurrences));
             writer.append("}");
             writer.close();
         } catch (IOException e) {
@@ -127,72 +125,11 @@ public class Main {
                     .append(stateName.concat(String.valueOf(occurrence)))
                     .append("[label=").append(String.valueOf('"')).append(stateName.equals("_")? " " : stateName).append(String.valueOf('"')).append("];\n");
             occurrences[stateName.charAt(0)] += 1;
-            state.getTransitions().forEach(transition2 -> {
-                generate(state, transition2, writer, occurrences);
-            });
+            state.getTransitions().forEach(transition2 -> generate(state, transition2, writer, occurrences));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-
-    private static void generateDOT(FiniteAutomaton automaton, String filename) {
-        List<FiniteState> states = automaton.getAllStates();
-        File file = new File(filename+".dot");
-        try {
-            FileWriter writer = new FileWriter(file);
-            writer.append("digraph { \n\t rankdir = \"LR\"; \n");
-            int index = 0;
-            for (FiniteState finiteState: states) {
-                String stateName = finiteState.getName().equals(" ") ? "_".concat(String.valueOf(index)) : finiteState.getName().concat(String.valueOf(index));
-                if(finiteState.isFinal()){
-                    writer.append("\t node [shape=doublecircle] Node").append(stateName).append(" [label ="+'"').append(stateName).append('"'+"];\n");
-                }else{
-                    writer.append("\t node [shape=circle] Node").append(stateName).append(" [label ="+'"').append(stateName).append('"'+"];\n");
-                }
-                index++;
-            }
-//            writer.append(declareStates(automaton.getInitialState(), 0));
-            int indexx = 0;
-            for (FiniteState finiteState : states){
-                String nodeName = finiteState.getName().equals(" ") ? "_".concat(String.valueOf(indexx)) : finiteState.getName().concat(String.valueOf(indexx));
-                int indexxx = 0;
-                for (FiniteTransition transition: finiteState.getTransitions()){
-                    String stateName = transition.getState().getName().equals(" ") ? "_".concat(String.valueOf(indexxx)) : transition.getState().getName().concat(String.valueOf(indexxx));
-                    writer.append("\t Node").append(nodeName).append(" -> Node").append(stateName).append("[label=").append(String.valueOf('"')).append(stateName).append(String.valueOf('"')).append("];\n");
-                    indexxx++;
-                }
-                indexx++;
-            }
-            writer.append("}");
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-//    private static String declareStates(FiniteState state, int stateNumber) {
-//        String nodes = "";
-//        String stateName = state.getName().equals(" ") ? "_".concat(String.valueOf(stateNumber)) : state.getName().concat(String.valueOf(stateNumber));
-//        if(!state.isFinal()){
-//            nodes = nodes.concat("\t node [shape=circle] Node").concat(stateName).concat(" [label ="+'"').concat(stateName).concat('"'+"];\n");
-//            for (FiniteTransition transition: state.getTransitions()) {
-//                nodes = nodes.concat(declareStates(transition.getState(), stateNumber));
-//                stateNumber ++;
-//            }
-//        }
-//        nodes = nodes.concat("\t node [shape=doublecircle] Node").concat(stateName).concat(" [label ="+'"').concat(stateName).concat('"'+"];\n");
-//        return nodes;
-//    }
-
-//    private static String goOverStates(FiniteState state, int stateNumber) {
-//        String nodes = "";
-//        String stateName = state.getName().equals(" ") ? "_".concat(String.valueOf(stateNumber)) : state.getName().concat(String.valueOf(stateNumber));
-//        if(!state.isFinal()){
-//            nodes = nodes.concat("\t Node").concat(stateName).concat(" -> Node").concat()
-//        }
-//        return nodes;
-//    }
 
     /**
      * Read the DOT source from a file,

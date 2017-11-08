@@ -49,18 +49,14 @@ digraph {
 	 l2 -> a2[label="a"];
 	 node [shape=circle] _1 [label =" "];
 	 a2 -> _1[label=" "];
-	 node [shape=circle] c0 [label ="c"];
-	 _1 -> c0[label="c"];
-	 node [shape=circle] o5 [label ="o"];
-	 c0 -> o5[label="o"];
-	 node [shape=circle] m2 [label ="m"];
-	 o5 -> m2[label="m"];
-	 node [shape=circle] o6 [label ="o"];
-	 m2 -> o6[label="o"];
-	 node [shape=circle] _2 [label =" "];
-	 o6 -> _2[label=" "];
-	 node [shape=circle] v0 [label ="v"];
-	 _2 -> v0[label="v"];
-	 node [shape= doublecircle] a3 [label ="a"];
-	 v0 -> a3[label="a"];
+	 node [shape=circle] g0 [label ="g"];
+	 _1 -> g0[label="g"];
+	 node [shape=circle] e0 [label ="e"];
+	 g0 -> e0[label="e"];
+	 node [shape=circle] n2 [label ="n"];
+	 e0 -> n2[label="n"];
+	 node [shape=circle] t0 [label ="t"];
+	 n2 -> t0[label="t"];
+	 node [shape= doublecircle] e1 [label ="e"];
+	 t0 -> e1[label="e"];
 }
