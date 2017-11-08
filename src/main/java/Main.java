@@ -6,7 +6,6 @@ import extras.GraphViz;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -29,11 +28,11 @@ public class Main {
             while ((line = br.readLine()) != null) {
                 automat.addNonDeterministically(line);
             }
-//            generateDOT(automat, "nfa");
-            generateDOT(automat.getInitialState(), "nfa");
-            dotToPNG("nfa");
+            generateDOT(automat.getInitialState(), "example/nfa");
+            dotToPNG("example/nfa");
             automat.transformToDeterministic();
             int indexFile = 0;
+            assert files != null;
             for(File auxFile: files){
                 HtmlReader htmlReader = new HtmlReader(auxFile.getPath());
                 String line2;
@@ -47,10 +46,8 @@ public class Main {
         }
 
         generateIndexTxt(automat,files);
-        generateDOT(automat.getInitialState(), "dfa");
-        dotToPNG("dfa");
-        /*generateDOT(automat, "dfa");
-        dotToPNG("dfa");*/
+        generateDOT(automat.getInitialState(), "example/dfa");
+        dotToPNG("example/dfa");
     }
 
     private static void generateIndexTxt(FiniteAutomaton automat, File[] files) {
