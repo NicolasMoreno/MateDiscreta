@@ -107,7 +107,9 @@ public class FiniteAutomaton {
                 if(!(states.get(0).getName().equals("null"))){
                     FiniteState auxState = new FiniteState(character);
                     states.forEach(state -> {
-                        if(state.isFinal()) auxState.setFinal(); //Checkeamos si alguno de los estados encontrados es final...
+                        if(state.isFinal()) {
+                            auxState.setFinal();//Checkeamos si alguno de los estados encontrados es final...
+                        }
                     });
                     if(newState.getStates(character.charAt(0)).get(0).getName().equals("null")) newState.addTransition(auxState, character.charAt(0));
                     states.forEach( otherState -> this.iterateAutomaton(dictionary,newState.getStates(character.charAt(0)).get(0), otherState));
