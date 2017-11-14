@@ -125,8 +125,11 @@ public class Main {
             else state.getTransitions().forEach(trans ->{
                 try {
                     writer.append("\t ")
-                            .append("[label=").append(String.valueOf('"')).append(trans.getState().getName().equals("_")? " " : trans.getState().getName()).append(String.valueOf('"')).append("];\n");
-                    trans.getState().getTransitions().forEach(transition3 -> generate(trans.getState(), transition3, writer, occurrences));
+                            .append(previousName.equals("InitialState0")? previousName : previousName.concat(String.valueOf(occurrences[previousName.charAt(0)]-1)))
+                            .append(" -> ")
+                            .append(stateName.concat(String.valueOf(occurrence)))
+                            .append("[label=").append(String.valueOf('"')).append(state.getName().equals("_")? " " : state.getName()).append(String.valueOf('"')).append("];\n");
+                    trans.getState().getTransitions().forEach(transition3 -> generate(state, transition3, writer, occurrences));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
