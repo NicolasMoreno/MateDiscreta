@@ -5,7 +5,7 @@ public class FiniteTransition {
     private final FiniteState state;
     private final char c;
 
-    public FiniteTransition(final FiniteState state,final char c){
+    FiniteTransition(final FiniteState state, final char c){
         this.state = state;
         this.c = c;
     }
@@ -14,7 +14,7 @@ public class FiniteTransition {
         return state;
     }
 
-    public char getChar() {
+    char getChar() {
         return c;
     }
 }
