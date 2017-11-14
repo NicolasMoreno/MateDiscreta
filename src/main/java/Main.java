@@ -110,8 +110,7 @@ public class Main {
                 writer.append("\t node [shape= doublecircle] ")
                         .append(stateName.concat(String.valueOf(occurrence)))
                         .append(" [label =" + '"').append(stateName.equals("_")? " " : stateName).append('"' + "];\n"); //
-            }
-            else{
+            }else{
                 writer.append("\t node [shape=circle] ")
                         .append(stateName.concat(String.valueOf(occurrence)))
                         .append(" [label =" + '"').append(stateName.equals("_")? " " : stateName).append('"' + "];\n"); //
@@ -122,7 +121,16 @@ public class Main {
                     .append(stateName.concat(String.valueOf(occurrence)))
                     .append("[label=").append(String.valueOf('"')).append(stateName.equals("_")? " " : stateName).append(String.valueOf('"')).append("];\n");
             occurrences[stateName.charAt(0)] += 1;
-            state.getTransitions().forEach(transition2 -> generate(state, transition2, writer, occurrences));
+            if(!state.isFinal()) state.getTransitions().forEach(transition2 -> generate(state, transition2, writer, occurrences));
+            else state.getTransitions().forEach(trans ->{
+                try {
+                    writer.append("\t ")
+                            .append("[label=").append(String.valueOf('"')).append(trans.getState().getName().equals("_")? " " : trans.getState().getName()).append(String.valueOf('"')).append("];\n");
+                    trans.getState().getTransitions().forEach(transition3 -> generate(trans.getState(), transition3, writer, occurrences));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }
