@@ -112,6 +112,7 @@ public class FiniteAutomaton {
                         }
                     });
                     if(newState.getStates(character.charAt(0)).get(0).getName().equals("null")) newState.addTransition(auxState, character.charAt(0));
+                    else if(auxState.isFinal()) newState.getStates(character.charAt(0)).get(0).setFinal();
                     states.forEach( otherState -> this.iterateAutomaton(dictionary,newState.getStates(character.charAt(0)).get(0), otherState));
                 }
             }

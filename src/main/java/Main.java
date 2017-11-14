@@ -23,7 +23,7 @@ public class Main {
         FiniteAutomaton automat = new FiniteAutomaton(q0);
         File[] files = new File(path2).listFiles();
         File file = new File(path);
-        DotGenerator dotGenerator = new DotGenerator();
+        DotGenerator dotGenerator = new DotGenerator(false);
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
@@ -33,6 +33,7 @@ public class Main {
             dotGenerator.generateDOT(automat.getInitialState(), "example/nfa");
             dotToPNG("example/nfa");
             automat.transformToDeterministic();
+            dotGenerator.changeMode();
             int indexFile = 0;
             assert files != null;
             for(File auxFile: files){
