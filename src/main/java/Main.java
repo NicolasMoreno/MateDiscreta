@@ -2,6 +2,7 @@ import Automaton.FiniteAutomaton;
 import Automaton.FiniteState;
 import Automaton.FiniteTransition;
 import HtmlReader.HtmlReader;
+import extras.DotGenerator;
 import extras.GraphViz;
 
 import java.io.*;
@@ -22,13 +23,14 @@ public class Main {
         FiniteAutomaton automat = new FiniteAutomaton(q0);
         File[] files = new File(path2).listFiles();
         File file = new File(path);
+        DotGenerator dotGenerator = new DotGenerator();
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
             while ((line = br.readLine()) != null) {
                 automat.addNonDeterministically(line);
             }
-            generateDOT(automat.getInitialState(), "example/nfa");
+            dotGenerator.generateDOT(automat.getInitialState(), "example/nfa");
             dotToPNG("example/nfa");
             automat.transformToDeterministic();
             int indexFile = 0;
@@ -46,7 +48,7 @@ public class Main {
         }
 
         generateIndexTxt(automat,files);
-        generateDOT(automat.getInitialState(), "example/dfa");
+        dotGenerator.generateDOT(automat.getInitialState(), "example/dfa");
         dotToPNG("example/dfa");
     }
 
@@ -84,60 +86,6 @@ public class Main {
         }
     }
 
-
-    private static void generateDOT(FiniteState state, String filename){
-        File file = new File(filename+".dot");
-        int[] occurrences = new int[256];
-        try {
-            FileWriter writer = new FileWriter(file);
-            writer.append("digraph { \n\t rankdir = \"LR\"; \n");
-            writer.append("\t node [shape=circle] ").append(state.getName().concat("0;\n"));
-            state.getTransitions().forEach( transition -> generate(state ,transition, writer, occurrences));
-            writer.append("}");
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void generate(FiniteState previousState, FiniteTransition transition, FileWriter writer, int[] occurrences)  {
-        final FiniteState state = transition.getState();
-        final String stateName = state.getName().equals(" ") ? "_" : state.getName();
-        final int occurrence = occurrences[stateName.charAt(0)];
-        final String previousName = previousState.getName().contains("InitialState") ? "InitialState0" : (previousState.getName().equals(" ")? "_" : previousState.getName());
-        try {
-            if(state.isFinal()) {
-                writer.append("\t node [shape= doublecircle] ")
-                        .append(stateName.concat(String.valueOf(occurrence)))
-                        .append(" [label =" + '"').append(stateName.equals("_")? " " : stateName).append('"' + "];\n"); //
-            }else{
-                writer.append("\t node [shape=circle] ")
-                        .append(stateName.concat(String.valueOf(occurrence)))
-                        .append(" [label =" + '"').append(stateName.equals("_")? " " : stateName).append('"' + "];\n"); //
-            }
-            writer.append("\t ")
-                    .append(previousName.equals("InitialState0")? previousName : previousName.concat(String.valueOf(occurrences[previousName.charAt(0)]-1)))
-                    .append(" -> ")
-                    .append(stateName.concat(String.valueOf(occurrence)))
-                    .append("[label=").append(String.valueOf('"')).append(stateName.equals("_")? " " : stateName).append(String.valueOf('"')).append("];\n");
-            occurrences[stateName.charAt(0)] += 1;
-            if(!state.isFinal()) state.getTransitions().forEach(transition2 -> generate(state, transition2, writer, occurrences));
-            else state.getTransitions().forEach(trans ->{
-                try {
-                    writer.append("\t ")
-                            .append(previousName.equals("InitialState0")? previousName : previousName.concat(String.valueOf(occurrences[previousName.charAt(0)]-1)))
-                            .append(" -> ")
-                            .append(stateName.concat(String.valueOf(occurrence)))
-                            .append("[label=").append(String.valueOf('"')).append(state.getName().equals("_")? " " : state.getName()).append(String.valueOf('"')).append("];\n");
-                    trans.getState().getTransitions().forEach(transition3 -> generate(state, transition3, writer, occurrences));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     /**
      * Read the DOT source from a file,

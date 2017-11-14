@@ -9,17 +9,19 @@ import java.io.IOException;
 
 public class DotGenerator {
 
-    private static int[] occurrences = new int[256];
+    private int[] occurrences;
 
-    public static void generateDOT(FiniteState state, String filename){
+    public DotGenerator(){}
+
+    public void generateDOT(FiniteState state, String filename){
         File file = new File(filename+".dot");
-        occurrences = new int[256];
+        this.occurrences = new int[256];
         try {
             FileWriter writer = new FileWriter(file);
             writer.append("digraph { \n\t rankdir = \"LR\"; \n");
             writer.append("\t node [shape=circle] ").append(state.getName().concat("0;\n")); //.append(" [label ="+'"').append(state.getName()).append('"'+"];\n");
             state.getTransitions().forEach( transition -> {
-                generate(state ,transition, writer);
+                generate(state ,transition, writer,0);
             });
             writer.append("}");
             writer.close();
@@ -28,10 +30,10 @@ public class DotGenerator {
         }
     }
 
-    private static void generate(FiniteState previousState, FiniteTransition transition, FileWriter writer)  {
+    private void generate(FiniteState previousState, FiniteTransition transition, FileWriter writer, int previousNodeIndex)  {
         final FiniteState state = transition.getState();
         final String stateName = state.getName().equals(" ") ? "_" : state.getName();
-        final int occurrence = occurrences[stateName.charAt(0)];
+        final int occurrence = this.occurrences[stateName.charAt(0)];
         final String previousName = previousState.getName().contains("InitialState") ? "InitialState0" : (previousState.getName().equals(" ")? "_" : previousState.getName());
         try {
             if(state.isFinal()) {
@@ -45,16 +47,20 @@ public class DotGenerator {
                         .append(" [label =" + '"').append(stateName.equals("_")? " " : stateName).append('"' + "];\n"); //
             }
             writer.append("\t ")
-                    .append(previousName.equals("InitialState0")? previousName : previousName.concat(String.valueOf(occurrences[previousName.charAt(0)]-1)))
+                    .append(previousName.equals("InitialState0")? previousName : previousName.concat(String.valueOf(previousNodeIndex)))
                     .append(" -> ")
                     .append(stateName.concat(String.valueOf(occurrence)))
                     .append("[label=").append(String.valueOf('"')).append(stateName.equals("_")? " " : stateName).append(String.valueOf('"')).append("];\n");
-            occurrences[stateName.charAt(0)] += 1;
-            state.getTransitions().forEach(transition2 -> {
-                int previousNodeIndex = occurrences[previousName.charAt(0)]; // TODO el problema esta en los indices.
-                generate(state, transition2, writer);
+            this.occurrences[stateName.charAt(0)] += 1;
+            int previousIndex = 0;
+            if(!previousName.equals("InitialState0")) {
+                previousIndex = this.occurrences[stateName.charAt(0)]-1; // TODO el problema esta en los indices.
+            }
+            for(FiniteTransition transition2: state.getTransitions()){
+                generate(state,transition2,writer,previousIndex);
 
-            });
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
